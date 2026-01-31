@@ -1,28 +1,49 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('https://fonts.gstatic.com/s/jetbrainsmono/v18/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPVmUsaaDhw.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('https://fonts.gstatic.com/s/jetbrainsmono/v18/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjOlmUsaaDhw.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --background: oklch(0.12 0 0);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.15 0 0);
-  --card-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.65 0.25 29);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.22 0 0);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.25 0 0);
-  --muted-foreground: oklch(0.55 0 0);
-  --accent: oklch(0.65 0.25 29);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
+  --background: oklch(0.08 0.01 260);
+  --foreground: oklch(0.95 0.01 260);
+  --card: oklch(0.11 0.015 260);
+  --card-foreground: oklch(0.95 0.01 260);
+  --primary: oklch(0.75 0.18 55);
+  --primary-foreground: oklch(0.12 0.01 260);
+  --secondary: oklch(0.16 0.02 260);
+  --secondary-foreground: oklch(0.95 0.01 260);
+  --muted: oklch(0.2 0.015 260);
+  --muted-foreground: oklch(0.65 0.02 260);
+  --accent: oklch(0.7 0.15 55);
+  --accent-foreground: oklch(0.12 0.01 260);
+  --destructive: oklch(0.6 0.22 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.25 0 0);
-  --input: oklch(0.2 0 0);
-  --ring: oklch(0.65 0.25 29);
+  --border: oklch(0.22 0.02 260);
+  --input: oklch(0.14 0.02 260);
+  --ring: oklch(0.75 0.18 55);
+
+  --glow-primary: oklch(0.75 0.18 55 / 0.4);
+  --glow-soft: oklch(0.75 0.18 55 / 0.15);
+  --success: oklch(0.7 0.17 145);
+  --info: oklch(0.65 0.15 250);
 }
 
 @theme inline {
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: 'JetBrains Mono', var(--font-geist-mono), monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -47,6 +68,178 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, oklch(0.75 0.18 55 / 0.08), transparent),
+      linear-gradient(to bottom, transparent 0%, oklch(0.08 0.01 260) 100%);
+    background-attachment: fixed;
   }
+}
+
+/* Animated grain texture overlay */
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -10%); }
+  20% { transform: translate(-15%, 5%); }
+  30% { transform: translate(7%, -25%); }
+  40% { transform: translate(-5%, 25%); }
+  50% { transform: translate(-15%, 10%); }
+  60% { transform: translate(15%, 0%); }
+  70% { transform: translate(0%, 15%); }
+  80% { transform: translate(3%, 35%); }
+  90% { transform: translate(-10%, 10%); }
+}
+
+/* Terminal glow effect */
+@keyframes terminalGlow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* Scan line animation */
+@keyframes scanLine {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+/* Typing cursor blink */
+@keyframes cursorBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Fade in up animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pulse glow animation */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px var(--glow-soft), inset 0 0 20px oklch(0.75 0.18 55 / 0.05);
+  }
+  50% {
+    box-shadow: 0 0 30px var(--glow-primary), inset 0 0 30px oklch(0.75 0.18 55 / 0.1);
+  }
+}
+
+/* Stagger children animation utility */
+.animate-stagger > * {
+  animation: fadeInUp 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.animate-stagger > *:nth-child(2) { animation-delay: 80ms; }
+.animate-stagger > *:nth-child(3) { animation-delay: 160ms; }
+.animate-stagger > *:nth-child(4) { animation-delay: 240ms; }
+.animate-stagger > *:nth-child(5) { animation-delay: 320ms; }
+.animate-stagger > *:nth-child(6) { animation-delay: 400ms; }
+
+/* Terminal card styling */
+.terminal-card {
+  position: relative;
+  background: linear-gradient(180deg, oklch(0.13 0.02 260) 0%, oklch(0.1 0.015 260) 100%);
+  border: 1px solid oklch(0.25 0.02 260);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.terminal-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      oklch(0 0 0 / 0.03) 2px,
+      oklch(0 0 0 / 0.03) 4px
+    );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Code block with line numbers */
+.code-block {
+  counter-reset: line;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.code-block .line::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 2.5em;
+  margin-right: 1em;
+  text-align: right;
+  color: oklch(0.4 0.02 260);
+  user-select: none;
+}
+
+/* Glowing text effect - subtle glow that doesn't blur the text */
+.glow-text {
+  filter: drop-shadow(0 0 20px var(--glow-soft));
+}
+
+/* JSON syntax highlighting */
+.json-key { color: oklch(0.75 0.18 55); }
+.json-string { color: oklch(0.7 0.17 145); }
+.json-number { color: oklch(0.75 0.15 80); }
+.json-boolean { color: oklch(0.7 0.15 290); }
+.json-null { color: oklch(0.5 0.02 260); }
+.json-bracket { color: oklch(0.5 0.02 260); }
+
+/* Input focus glow */
+.input-glow:focus {
+  box-shadow:
+    0 0 0 1px var(--ring),
+    0 0 20px var(--glow-soft),
+    inset 0 0 20px oklch(0.75 0.18 55 / 0.03);
+}
+
+/* Button hover glow */
+.btn-glow {
+  transition: all 0.3s ease;
+}
+
+.btn-glow:hover:not(:disabled) {
+  box-shadow:
+    0 0 20px var(--glow-primary),
+    0 4px 20px oklch(0 0 0 / 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-glow:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Status indicator pulse */
+@keyframes statusPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 oklch(0.7 0.17 145 / 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 6px oklch(0.7 0.17 145 / 0);
+  }
+}
+
+.status-pulse {
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+/* Grid background pattern */
+.grid-pattern {
+  background-image:
+    linear-gradient(oklch(0.2 0.02 260 / 0.5) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.2 0.02 260 / 0.5) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
