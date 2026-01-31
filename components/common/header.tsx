@@ -18,8 +18,8 @@ export default function Header() {
 
           {/* Status badge */}
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/50 border border-border/50">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 status-pulse" />
-            <span className="text-xs font-mono text-muted-foreground">API v1.0</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-400 status-pulse" />
+            <span className="text-xs font-mono text-muted-foreground">API {process.env.NEXT_PUBLIC_API_VERSION || "v0.1"}</span>
           </div>
         </div>
       </div>

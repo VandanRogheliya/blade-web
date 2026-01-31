@@ -59,9 +59,9 @@ export function generateCurlCommand(text: string): string {
   const url = `${config.baseUrl}${AI_API_ENDPOINTS.transactionParser}`
   const escapedText = text.replace(/"/g, '\\"')
 
-  return `curl -X POST ${url} \\
-  -H "Content-Type: application/json" \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
+  return `curl -X POST ${url} \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
     "text": "${escapedText}"
   }'`

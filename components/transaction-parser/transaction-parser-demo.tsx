@@ -120,17 +120,17 @@ export default function TransactionParserDemo() {
           {/* Stats */}
           <div className="flex items-center justify-center gap-4 sm:gap-8 pt-4">
             <div className="text-center">
-              <div className="text-xl sm:text-2xl font-bold font-mono text-primary">&lt;50ms</div>
+              <div className="text-xl sm:text-2xl font-bold font-mono text-primary">Fast</div>
               <div className="text-[10px] sm:text-xs text-foreground/60 uppercase tracking-wider font-semibold">Avg Response</div>
             </div>
             <div className="w-px h-8 sm:h-10 bg-border" />
             <div className="text-center">
-              <div className="text-xl sm:text-2xl font-bold font-mono text-primary">99.9%</div>
+              <div className="text-xl sm:text-2xl font-bold font-mono text-primary">High</div>
               <div className="text-[10px] sm:text-xs text-foreground/60 uppercase tracking-wider font-semibold">Accuracy</div>
             </div>
             <div className="w-px h-8 sm:h-10 bg-border" />
             <div className="text-center">
-              <div className="text-xl sm:text-2xl font-bold font-mono text-primary">50+</div>
+              <div className="text-xl sm:text-2xl font-bold font-mono text-primary">Many</div>
               <div className="text-[10px] sm:text-xs text-foreground/60 uppercase tracking-wider font-semibold">Banks</div>
             </div>
           </div>

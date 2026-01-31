@@ -9,7 +9,7 @@ const products = [
     title: "Transaction Parser",
     description: "Extract structured data from messy transaction descriptions. Bank feeds, payment processors, POS systems — we handle them all.",
     icon: FileText,
-    status: "live" as const,
+    status: "preview" as const,
     href: "/transaction-parser",
     accent: "from-primary/20 to-amber-500/20",
     iconColor: "text-primary",
@@ -54,14 +54,15 @@ interface ProductCardProps {
   title: string
   description: string
   icon: React.ElementType
-  status: "live" | "coming"
+  status: "live" | "preview" | "coming"
   href: string
   accent: string
   iconColor: string
 }
 
 function ProductCard({ title, description, icon: Icon, status, href, accent, iconColor }: ProductCardProps) {
-  const isLive = status === "live"
+  const isLive = status === "live" || status === "preview"
+  const isPreview = status === "preview"
 
   const cardClassName = cn(
     "group relative terminal-card p-6 transition-all duration-300 block",
@@ -90,7 +91,12 @@ function ProductCard({ title, description, icon: Icon, status, href, accent, ico
           </div>
 
           {/* Status badge */}
-          {isLive ? (
+          {isPreview ? (
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 status-pulse" />
+              <span className="text-xs font-mono text-blue-400">Preview</span>
+            </div>
+          ) : isLive ? (
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 status-pulse" />
               <span className="text-xs font-mono text-emerald-400">Live</span>

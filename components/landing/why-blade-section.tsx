@@ -5,7 +5,7 @@ const features = [
   {
     icon: Zap,
     title: "Lightning Fast",
-    description: "Sub-100ms responses with intelligent caching. Recognized patterns return instantly.",
+    description: "Fast responses with intelligent caching. Recognized patterns return instantly.",
     accent: "from-amber-500/20 to-orange-500/20",
     iconColor: "text-amber-400",
   },
