@@ -5,26 +5,13 @@ import {
   TRANSACTION_PLACEHOLDER_TEXT,
   TRANSACTION_PARSER_STRINGS,
 } from "@/lib/constants/transaction-parser"
-import { generateCurlCommand } from "@/lib/services/ai-api"
+import { generateCurlCommand, parseTransaction } from "@/lib/services/ai-api"
+import type { ParseTxnResponse } from "@/lib/types/transaction-parser"
 import { ValuePropositionCard } from "./value-proposition-card"
 import { InputProvidedSection } from "./input-provided-section"
 import { JsonResponseViewer } from "./json-response-viewer"
 import { CurlCommandSection } from "./curl-command-section"
 import { TransactionInputForm } from "./transaction-input-form"
-
-const SAMPLE_RESPONSE = {
-  status: "success",
-  data: {
-    bank: "SBI",
-    account_last_digits: "234567",
-    transaction_type: "debit",
-    method: "NACH",
-    amount: 8456.0,
-    currency: "INR",
-    date: "2025-11-03",
-    balance: 112345.78,
-  },
-}
 
 export default function TransactionParserDemo() {
   const [inputText, setInputText] = useState("")
@@ -32,21 +19,31 @@ export default function TransactionParserDemo() {
   const [isLoading, setIsLoading] = useState(false)
   const [responseTime, setResponseTime] = useState(0)
   const [error, setError] = useState<string | null>(null)
+  const [apiResponse, setApiResponse] = useState<ParseTxnResponse | null>(null)
 
   const effectiveInput = inputText || TRANSACTION_PLACEHOLDER_TEXT
   const curlCommand = generateCurlCommand(effectiveInput)
 
-  const handleParse = () => {
+  const handleParse = async () => {
     setIsLoading(true)
     setError(null)
+    const startTime = performance.now()
 
-    const time = Math.floor(Math.random() * 750) + 50
-    setTimeout(() => {
-      setResponseTime(time)
+    try {
+      const response = await parseTransaction(effectiveInput)
+      setResponseTime(Math.round(performance.now() - startTime))
+      setApiResponse(response)
       setHasResult(true)
+    } catch (err) {
+      setResponseTime(Math.round(performance.now() - startTime))
+      setError(err instanceof Error ? err.message : "Failed to parse transaction")
+      setHasResult(true)
+    } finally {
       setIsLoading(false)
-    }, time)
+    }
   }
+
+  const isInvalidTransaction = apiResponse && !apiResponse.is_valid_transaction
 
   if (hasResult) {
     return (
@@ -61,8 +58,34 @@ export default function TransactionParserDemo() {
                 <p className="text-destructive text-sm font-mono">{error}</p>
               </div>
             </div>
+          ) : isLoading ? (
+            <div className="relative">
+              {apiResponse && (
+                <div className="opacity-50 pointer-events-none">
+                  <JsonResponseViewer data={apiResponse} responseTime={responseTime} />
+                </div>
+              )}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-background/80 border border-border/50 backdrop-blur-sm">
+                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  <span className="text-sm font-mono text-muted-foreground">Parsing...</span>
+                </div>
+              </div>
+            </div>
+          ) : isInvalidTransaction ? (
+            <div className="space-y-4">
+              <div className="terminal-card p-5 border-yellow-500/50">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
+                  <p className="text-yellow-500 text-sm font-mono">
+                    The given message is not a valid transaction message
+                  </p>
+                </div>
+              </div>
+              <JsonResponseViewer data={apiResponse} responseTime={responseTime} />
+            </div>
           ) : (
-            <JsonResponseViewer data={SAMPLE_RESPONSE} responseTime={responseTime} />
+            <JsonResponseViewer data={apiResponse} responseTime={responseTime} />
           )}
 
           <CurlCommandSection curlCommand={curlCommand} />

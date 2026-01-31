@@ -1,19 +1,34 @@
-import type { ApiSuccessResponse, ApiErrorResponse } from "./api"
-
-export interface TransactionData {
-  bank: string
-  account_last_digits: string
-  transaction_type: "debit" | "credit"
-  method: string
-  amount: number
-  currency: string
-  date: string
-  balance: number
+// Request type for the transaction parser API
+export interface ParseTxnRequest {
+  text: string
+  date?: string // Optional date override
 }
 
-export type ParseSuccessResponse = ApiSuccessResponse<TransactionData>
-export type ParseErrorResponse = ApiErrorResponse
-export type ParseResponse = ParseSuccessResponse | ParseErrorResponse
+// Response type from the Go API
+export interface ParseTxnResponse {
+  is_valid_transaction: boolean
+  transaction: {
+    amount: number // in paise/cents
+    currency: string
+    type: string // "DEBIT" | "CREDIT"
+    method: string // "NETBANKING", "UPI", etc.
+    status: string // "SUCCESS", "FAILED", etc.
+    timestamp: string // ISO format "2025-11-03T00:00:00"
+  }
+  user_account: {
+    institution: string | null
+    masked_number: string | null
+    balance_available: number | null // in paise/cents
+  }
+  counterparty: {
+    name: string | null
+    identifier: string | null
+  }
+  refs: {
+    reference_number: string | null
+    secondary_reference: string | null
+  }
+}
 
 export interface ValuePropositionCardProps {
   className?: string

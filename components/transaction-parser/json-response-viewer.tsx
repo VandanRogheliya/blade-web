@@ -180,7 +180,7 @@ export function JsonResponseViewer({ data, responseTime }: JsonResponseViewerPro
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const isSuccess = data && typeof data === "object" && "status" in data && data.status === "success"
+  const isValidTransaction = Boolean(data && typeof data === "object" && "is_valid_transaction" in data && (data as { is_valid_transaction: boolean }).is_valid_transaction === true)
 
   return (
     <div className="space-y-3">
@@ -189,7 +189,7 @@ export function JsonResponseViewer({ data, responseTime }: JsonResponseViewerPro
           <h3 className="text-lg font-semibold text-foreground">
             {TRANSACTION_PARSER_STRINGS.jsonResponseTitle}
           </h3>
-          {isSuccess && (
+          {isValidTransaction && (
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
               <CheckCircle2 className="w-3 h-3 text-emerald-400" />
               <span className="text-xs font-medium text-emerald-400">Parsed</span>

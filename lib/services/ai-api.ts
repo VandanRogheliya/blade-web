@@ -1,6 +1,5 @@
 import { AI_API_BASE_URL, AI_API_ENDPOINTS } from "@/lib/constants/api"
-import type { ApiResponse, AiApiConfig } from "@/lib/types/api"
-import type { TransactionData, ParseResponse } from "@/lib/types/transaction-parser"
+import type { ParseTxnRequest, ParseTxnResponse } from "@/lib/types/transaction-parser"
 
 export class AiApiError extends Error {
   public readonly code: string
@@ -14,25 +13,21 @@ export class AiApiError extends Error {
   }
 }
 
-function getApiConfig(): AiApiConfig {
-  return {
-    baseUrl: AI_API_BASE_URL,
-    apiKey: process.env.NEXT_PUBLIC_BLADE_API_KEY,
-  }
-}
+export async function parseTransaction(
+  text: string,
+  date?: string
+): Promise<ParseTxnResponse> {
+  const url = `${AI_API_BASE_URL}${AI_API_ENDPOINTS.transactionParser}`
 
-export async function aiApiRequest<T>(
-  endpoint: string,
-  body: Record<string, unknown>
-): Promise<ApiResponse<T>> {
-  const config = getApiConfig()
-  const url = `${config.baseUrl}${endpoint}`
+  const body: ParseTxnRequest = { text }
+  if (date) {
+    body.date = date
+  }
 
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      ...(config.apiKey && { Authorization: `Bearer ${config.apiKey}` }),
     },
     body: JSON.stringify(body),
   })
@@ -45,24 +40,15 @@ export async function aiApiRequest<T>(
     )
   }
 
-  return response.json() as Promise<ApiResponse<T>>
-}
-
-export async function parseTransaction(text: string): Promise<ParseResponse> {
-  return aiApiRequest<TransactionData>(AI_API_ENDPOINTS.transactionParser, {
-    text,
-  })
+  return response.json() as Promise<ParseTxnResponse>
 }
 
 export function generateCurlCommand(text: string): string {
-  const config = getApiConfig()
-  const url = `${config.baseUrl}${AI_API_ENDPOINTS.transactionParser}`
-  const escapedText = text.replace(/"/g, '\\"')
+  const url = `${AI_API_BASE_URL}${AI_API_ENDPOINTS.transactionParser}`
+  const escapedText = text.replace(/"/g, '\\"').replace(/\n/g, '\\n')
 
-  return `curl -X POST ${url} \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -d '{
-    "text": "${escapedText}"
-  }'`
+  return `curl --request POST \\
+  --url ${url} \\
+  --header 'Content-Type: application/json' \\
+  --data '{"text": "${escapedText}"}'`
 }
