@@ -15,15 +15,6 @@ export function CurlCommandSection({ curlCommand }: CurlCommandSectionProps) {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  // Split curl command into lines for better formatting
-  const formatCurlCommand = (cmd: string) => {
-    // Basic formatting - split on common curl flags
-    return cmd
-      .replace(/ -H /g, " \\\n  -H ")
-      .replace(/ -d /g, " \\\n  -d ")
-      .replace(/ --data /g, " \\\n  --data ")
-  }
-
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -76,7 +67,7 @@ export function CurlCommandSection({ curlCommand }: CurlCommandSectionProps) {
           <div className="flex items-start gap-2">
             <span className="text-primary font-mono text-sm select-none">$</span>
             <pre className="text-sm font-mono text-muted-foreground whitespace-pre-wrap break-words leading-relaxed">
-              {formatCurlCommand(curlCommand)}
+              {curlCommand}
             </pre>
           </div>
         </div>
